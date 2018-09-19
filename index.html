@@ -1,0 +1,28 @@
+<html>
+<head>
+<title>Deeplink tests</title>
+</head>
+<body>
+
+<h1>Current</h1>
+
+<p><a href="ms-windows-store://pdp/?ProductId=9wzdncrdfwbt">ms-windows-store://pdp/?ProductId=9wzdncrdfwbt</a></p>
+
+<p><a href="ms-windows-store://pdp/?PhoneAppId=9wzdncrdfwbt">ms-windows-store://pdp/?PhoneAppId=9wzdncrdfwbt</a></p>
+
+<p><a href="ms-windows-store://pdp/?PhoneAppId=6b587088-a2bd-4597-8416-6c77f0a3ec6d">ms-windows-store://pdp/?PhoneAppId=6b587088-a2bd-4597-8416-6c77f0a3ec6d</a></p>
+
+<h1>Legacy</h1>
+
+<p><a href="zune:navigate">zune:navigate</a></p>
+
+<p><a href="zune:reviewapp?app-id=6b587088-a2bd-4597-8416-6c77f0a3ec6d">zune:reviewapp?app-id=6b587088-a2bd-4597-8416-6c77f0a3ec6d</a></p>
+
+<h1>Manual testing</h1>
+
+<p><textarea oninput="testLink.innerText = this.value; testLink.href = this.value;" style="width: 100%">ms-windows-store://pdp/?PhoneAppId=6b587088-a2bd-4597-8416-6c77f0a3ec6d</textarea></p>
+
+<p><a id="testLink" href="ms-windows-store://pdp/?PhoneAppId=6b587088-a2bd-4597-8416-6c77f0a3ec6d">ms-windows-store://pdp/?PhoneAppId=6b587088-a2bd-4597-8416-6c77f0a3ec6d</a></p>
+
+</body>
+</html>
