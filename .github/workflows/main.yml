@@ -1,0 +1,31 @@
+name: Release
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      forceBuild:
+        description: "Force image build"
+        required: false
+        default: false
+        type: boolean
+
+env:
+  BUILD_IMAGE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.forceBuild == 'true' }}
+
+jobs:
+  build:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run check and reset
+        if: ${{ env.BUILD_IMAGE != 'true' }}
+        run: |
+          echo "BUILD_IMAGE=true" >> $GITHUB_ENV
+
+      - name: Check if Docker image already exists
+        run: |
+          echo BUILD_IMAGE: ${BUILD_IMAGE}
