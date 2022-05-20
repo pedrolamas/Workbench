@@ -14,18 +14,26 @@ env:
   BUILD_IMAGE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.forceBuild == 'true' }}
 
 jobs:
-  build:
-    name: Build and deploy
+  setup:
+    name: Setup
     runs-on: ubuntu-latest
+    outputs:
+      buildImage: ${{ steps.check.outputs.buildImage }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Run check and reset
-        if: ${{ env.BUILD_IMAGE != 'true' }}
+        id: check
         run: |
-          echo "BUILD_IMAGE=true" >> $GITHUB_ENV
+          echo ::set-output name=buildImage::true
 
-      - name: Check if Docker image already exists
+  build:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    needs: setup
+    if: ${{ needs.setup.outputs.buildImage == 'true' }}
+    steps:
+      - name: Do It
         run: |
-          echo BUILD_IMAGE: ${BUILD_IMAGE}
+          echo ${{ needs.setup.outputs.buildImage }}
