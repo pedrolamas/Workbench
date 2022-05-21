@@ -17,8 +17,12 @@ jobs:
   setup:
     name: Setup
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [10, 12]
     outputs:
-      buildImage: ${{ steps.check.outputs.buildImage }}
+      buildImage_10: ${{ steps.result.outputs.buildImage_10 }}
+      buildImage_12: ${{ steps.result.outputs.buildImage_12 }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -26,14 +30,40 @@ jobs:
       - name: Run check and reset
         id: check
         run: |
-          echo ::set-output name=buildImage::true
+          echo "buildImage=true" >> $GITHUB_OUTPUT
+
+      - name: Run check 2
+        id: result
+        if: ${{ matrix.version == 10 }}
+        run: |
+          echo "buildImage_${{ matrix.version }}=${{ matrix.version }}" >> $GITHUB_OUTPUT
+
+  debug:
+    name: Debug
+    runs-on: ubuntu-latest
+    needs: setup
+    outputs:
+      build_matrix: ${{ steps.setme.outputs.build_matrix }}
+    steps:
+      - name: Do It
+        id: setme
+        run: |
+          cat <<'END'
+          ${{ toJSON(needs.setup) }}
+          END
+          echo "build_matrix=[${{ join(needs.setup.outputs.*, ',') }}]" >> $GITHUB_OUTPUT
 
   build:
     name: Build and deploy
     runs-on: ubuntu-latest
-    needs: setup
-    if: ${{ needs.setup.outputs.buildImage == 'true' }}
+    strategy:
+      matrix:
+        version: ${{ fromJSON(needs.debug.outputs.build_matrix) }}
+    needs: debug
     steps:
       - name: Do It
         run: |
           echo ${{ needs.setup.outputs.buildImage }}
+          cat <<'END'
+          ${{ toJSON(needs.setup) }}
+          END
